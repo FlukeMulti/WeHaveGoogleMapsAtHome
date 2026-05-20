@@ -478,28 +478,29 @@ document.addEventListener('DOMContentLoaded', () => {
     initAutocomplete('dir-dest-input', 'dir-autocomplete-panel', 'dest');
 
     function performGeosearch(query, panel, type) {
-        // Enforce UAE specific search bounds & country code limit to keep it fast
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=ae&limit=6&addressdetails=1`;
+        // Use Photon (Komoot) API for much broader POI and local business coverage
+        // UAE Bounding Box roughly: 51.58,22.63,56.38,26.08
+        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&bbox=51.58,22.63,56.38,26.08&limit=8`;
         
-        fetch(url, {
-            headers: {
-                'Accept-Language': 'en'
-            }
-        })
+        fetch(url)
         .then(res => res.json())
         .then(data => {
             panel.innerHTML = '';
             
-            if (data.length === 0) {
-                panel.innerHTML = '<div class="autocomplete-item"><p>No locations found in UAE</p></div>';
+            if (!data.features || data.features.length === 0) {
+                panel.innerHTML = '<div class="autocomplete-item"><p>No locations found</p></div>';
                 panel.classList.remove('hidden');
                 return;
             }
 
-            data.forEach(item => {
-                const displayName = item.display_name;
-                const shortName = item.name || displayName.split(',')[0];
-                const locationDetails = displayName.replace(shortName + ', ', '');
+            data.features.forEach(feature => {
+                const props = feature.properties;
+                const lng = feature.geometry.coordinates[0];
+                const lat = feature.geometry.coordinates[1];
+                
+                const shortName = props.name || props.street || props.city || 'Unknown Place';
+                const cityState = [props.city, props.state, props.country].filter(Boolean).join(', ');
+                const locationDetails = props.street ? `${props.street}, ${cityState}` : cityState;
                 
                 const element = document.createElement('div');
                 element.className = 'autocomplete-item';
@@ -513,8 +514,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
 
+                // Convert Photon feature back to our app's internal format
+                const normalizedItem = {
+                    lat: lat,
+                    lon: lng,
+                    display_name: `${shortName}, ${locationDetails}`
+                };
+
                 element.addEventListener('click', () => {
-                    selectLocation(item, shortName, type);
+                    selectLocation(normalizedItem, shortName, type);
                     panel.classList.add('hidden');
                 });
 
@@ -525,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
             panel.classList.remove('hidden');
         })
         .catch(err => {
-            console.error('Nominatim Geosearch Error:', err);
+            console.error('Photon Geosearch Error:', err);
         });
     }
 
