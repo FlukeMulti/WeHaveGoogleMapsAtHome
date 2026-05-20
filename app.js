@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Drop target pin using a glowing marker element
             if (searchMarker) searchMarker.remove();
             const el = createCustomMarkerElement('origin');
-            searchMarker = new maplibregl.Marker({ element: el, anchor: 'center' })
+            searchMarker = new maplibregl.Marker({ element: el, anchor: 'top-left' })
                 .setLngLat([lng, lat])
                 .setPopup(new maplibregl.Popup().setHTML(`<div class="popup-details"><div class="popup-title">${shortName}</div><p class="popup-desc" style="font-size:0.75rem">${item.display_name}</p></div>`))
                 .addTo(map);
@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (originMarker) originMarker.remove();
             const el = createCustomMarkerElement('origin');
-            originMarker = new maplibregl.Marker({ element: el, anchor: 'center' })
+            originMarker = new maplibregl.Marker({ element: el, anchor: 'top-left' })
                 .setLngLat([lng, lat])
                 .addTo(map);
             
@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (destMarker) destMarker.remove();
             const el = createCustomMarkerElement('dest');
-            destMarker = new maplibregl.Marker({ element: el, anchor: 'center' })
+            destMarker = new maplibregl.Marker({ element: el, anchor: 'top-left' })
                 .setLngLat([lng, lat])
                 .addTo(map);
                 
@@ -1035,7 +1035,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vehicleEl = document.createElement('div');
         vehicleEl.className = 'navigation-vehicle-glow';
         
-        navVehicleMarker = new maplibregl.Marker({ element: vehicleEl, anchor: 'center' })
+        navVehicleMarker = new maplibregl.Marker({ element: vehicleEl, anchor: 'top-left' })
             .setLngLat(routeCoords[0])
             .addTo(map);
 

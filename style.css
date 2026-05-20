@@ -1664,6 +1664,7 @@ li.active .step-node-dot {
     border: 3px solid #fff !important;
     box-shadow: 0 0 18px hsla(var(--clr-cyan), 0.85), inset 0 0 4px rgba(0, 0, 0, 0.4) !important;
     transition: all 0.12s linear;
+    transform: translate(-50%, -50%) !important;
 }
 
 .custom-map-marker {
@@ -1675,6 +1676,7 @@ li.active .step-node-dot {
     justify-content: center !important;
     margin: 0 !important;
     padding: 0 !important;
+    transform: translate(-50%, -50%) !important;
     cursor: pointer;
 }
 
