@@ -28,19 +28,16 @@
 
     <!-- Active Navigation HUD Indicator (Top Center) -->
     <div id="nav-guidance-hud" class="hud-overlay glass-card hidden">
-        <div class="guidance-icon-container">
-            <i data-lucide="navigation" id="guidance-direction-icon"></i>
+        <div class="guidance-icon-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div class="speed-val" id="hud-live-speed" style="font-size: 1.8rem; font-weight: 900; line-height: 1;">0</div>
+            <div class="speed-unit" style="font-size: 0.65rem; font-weight: 700; opacity: 0.8; letter-spacing: 1px;">KM/H</div>
         </div>
-        <div class="guidance-info">
-            <h2 id="guidance-instruction-text">Turn right onto Sheikh Zayed Road</h2>
+        <div class="guidance-info" style="flex: 1; padding-right: 10px;">
+            <h2 id="guidance-instruction-text" style="font-size: 1.1rem; line-height: 1.25; white-space: normal; margin-bottom: 4px;">Turn right onto Sheikh Zayed Road</h2>
             <div class="guidance-stats">
                 <span class="guidance-stat-item"><i data-lucide="arrow-right-left"></i> <span id="hud-distance-to-turn">300 m</span></span>
-                <span class="guidance-stat-item"><i data-lucide="clock"></i> <span id="hud-eta-timer">12 min remaining</span></span>
+                <span class="guidance-stat-item"><i data-lucide="clock"></i> <span id="hud-eta-timer">12 min</span></span>
             </div>
-        </div>
-        <div class="hud-speedometer-panel">
-            <div class="speed-val" id="hud-live-speed">0</div>
-            <div class="speed-unit">km/h</div>
         </div>
         <!-- Mobile close button inside HUD -->
         <button id="stop-nav-btn-hud" class="icon-btn-exit" title="Exit Route"><i data-lucide="x"></i></button>

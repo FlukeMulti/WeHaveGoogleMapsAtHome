@@ -1191,7 +1191,7 @@ li.active .step-node-dot {
    MAP FLOATING CONTROLS CLUSTER
    ========================================================================== */
 
-.map-controls-cluster {
+.map-controls-cluster { align-items: flex-end !important;
     position: absolute;
     bottom: 24px;
     right: 24px;
@@ -1634,7 +1634,7 @@ li.active .step-node-dot {
         margin-left: 10px !important;
     }
     
-    .map-controls-cluster {
+    .map-controls-cluster { align-items: flex-end !important;
         top: calc(60px + env(safe-area-inset-top, 0px)) !important;
         bottom: auto !important;
         right: 8px !important;
@@ -1645,12 +1645,12 @@ li.active .step-node-dot {
         z-index: 500;
     }
     
-    body.nav-active .map-controls-cluster {
+    body.nav-active .map-controls-cluster { align-items: flex-end !important;
         top: calc(180px + env(safe-area-inset-top, 0px)) !important;
     }
     
     .glass-sidebar.collapsed ~ .map-controls-cluster,
-    .glass-sidebar.expanded ~ .map-controls-cluster {
+    .glass-sidebar.expanded ~ .map-controls-cluster { align-items: flex-end !important;
         /* No longer moving the controls based on sidebar state since they are top-anchored */
     }
 }
