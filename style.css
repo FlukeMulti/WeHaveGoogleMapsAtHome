@@ -1719,3 +1719,8 @@ li.active .step-node-dot {
 .btn-primary {
     color: hsl(var(--text-btn-primary)) !important;
 }
+
+/* Fix Search Overlap */
+.search-section { position: relative; z-index: 1000; }
+.autocomplete-dropdown { background-color: #11141a !important; position: absolute; top: 100%; left: 0; width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 9999 !important; overflow: hidden; }
+.autocomplete-item { background-color: #11141a !important; }
