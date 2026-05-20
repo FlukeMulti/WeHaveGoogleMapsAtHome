@@ -327,16 +327,13 @@
         </button>
 
         <div class="divider"></div>
+        
+        <!-- Recenter to vehicle -->
+        <button class="control-btn square-btn" id="ctrl-recenter" title="Recenter to Vehicle" style="display: none;"><i data-lucide="crosshair"></i></button>
 
-        <!-- Zoom In -->
-        <button class="control-btn square-btn" id="map-control-zoomin" title="Zoom In"><i data-lucide="plus"></i></button>
-        <!-- Zoom Out -->
-        <button class="control-btn square-btn" id="map-control-zoomout" title="Zoom Out"><i data-lucide="minus"></i></button>
         <!-- Reset Rotation -->
-        <button class="control-btn square-btn" id="map-control-compass" title="Align to North"><i data-lucide="compass" class="compass-icon"></i></button>
+        <button class="control-btn square-btn" id="map-control-compass" title="Align to North"><i data-lucide="compass" id="compass-icon"></i></button>
     </div>
-
-
     <!-- MapLibre GL JS Library -->
     <script src="https://unpkg.com/maplibre-gl@4.3.0/dist/maplibre-gl.js"></script>
 

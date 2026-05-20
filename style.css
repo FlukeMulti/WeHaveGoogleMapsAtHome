@@ -31,26 +31,26 @@
     --glow-cyan: 0 0 18px hsla(var(--clr-cyan), 0.45);
 }
 
-/* Light Theme Variables Overrides - Premium Alabaster Glass */
+/* Light Theme Variables Overrides - Premium Icy Glass */
 body.light-theme {
-    --clr-emerald: 160, 84%, 39%;     /* Premium Emerald Branding */
-    --clr-gold: 36, 100%, 50%;        /* Luxury Sand Gold */
-    --clr-cyan: 188, 100%, 48%;       /* High-Tech Cyan Route/Alert */
+    --clr-emerald: 195, 100%, 45%;     /* Icy Blue Branding */
+    --clr-gold: 210, 80%, 65%;        /* Soft Blue Accent */
+    --clr-cyan: 190, 100%, 50%;       /* Icy Cyan Route/Alert */
     --clr-red: 350, 80%, 55%;         /* Stop Pin */
     --clr-orange: 20, 90%, 55%;
     
-    --bg-base: 220, 30%, 96%;         /* Soft Alabaster Light */
-    --bg-surface: 220, 20%, 100%;
-    --bg-glass: 255, 255, 255, 0.78;  /* Frosted Ice Glass */
-    --border-glass: 255, 255, 255, 0.48; /* High Glass White Edge */
-    --text-primary: 220, 30%, 12%;    /* Slate Blue Primary Text */
-    --text-muted: 220, 12%, 45%;
-    --text-inv: 255, 255, 255%;
-    --text-btn-primary: 0, 0%, 100%;  /* White text on green button */
+    --bg-base: 210, 30%, 98%;         /* Ultra Crisp White */
+    --bg-surface: 210, 20%, 100%;
+    --bg-glass: 255, 255, 255, 0.85;  /* Extremely Frosted Ice Glass */
+    --border-glass: 255, 255, 255, 0.7; /* Crisp White Edge */
+    --text-primary: 210, 40%, 15%;    /* Deep Slate Blue Text */
+    --text-muted: 210, 20%, 50%;
+    --text-inv: 255, 255, 255;
+    --text-btn-primary: 255, 255, 255;  /* White text on ice blue button */
     
-    --shadow-premium: 0 16px 40px rgba(0, 0, 0, 0.05), 0 2px 10px rgba(0, 0, 0, 0.01);
-    --glow-emerald: 0 0 12px hsla(var(--clr-emerald), 0.25);
-    --glow-cyan: 0 0 12px hsla(var(--clr-cyan), 0.3);
+    --shadow-premium: 0 16px 40px rgba(0, 0, 0, 0.04), 0 2px 10px rgba(0, 0, 0, 0.02);
+    --glow-emerald: 0 0 16px hsla(var(--clr-emerald), 0.35);
+    --glow-cyan: 0 0 16px hsla(var(--clr-cyan), 0.4);
 }
 
 /* Reset and Global Styles */

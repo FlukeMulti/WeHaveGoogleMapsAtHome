@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastSpokenStepIndex = -1;
     let geolocationWatchId = null;
     let lastGeolocatedPosition = null;
+    let isAutoFollowing = true;
+    let lastHeading = 0;
 
     // Weather mock data / open-meteo integration
     fetchWeather();
@@ -99,9 +101,16 @@ document.addEventListener('DOMContentLoaded', () => {
         zoom: 11,
         pitch: 0,
         bearing: 0,
-        maxBounds: UAE_BOUNDS,
-        maxZoom: 21,
-        minZoom: 7
+        attributionControl: false
+    });
+
+    // Add auto-recenter trigger when dragging the map during navigation
+    map.on('dragstart', () => {
+        if (document.body.classList.contains('nav-active')) {
+            isAutoFollowing = false;
+            const recenterBtn = document.getElementById('ctrl-recenter');
+            if (recenterBtn) recenterBtn.style.display = 'flex';
+        }
     });
 
     // Fire Lucide icon generator
@@ -789,6 +798,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Draw Route line on vector layers
             drawRouteOnMap(routeCoords);
 
+            // Align destination marker perfectly with the end of calculated route snappings
+            if (destMarker && routeCoords.length > 0) {
+                destMarker.setLngLat(routeCoords[routeCoords.length - 1]);
+            }
+
             // 2. Center camera to cover the whole path bounds
             fitMapToRoute(routeCoords);
 
@@ -849,6 +863,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         drawRouteOnMap(routeCoords);
+        
+        // Align destination marker perfectly with the end of calculated route snappings
+        if (destMarker && routeCoords.length > 0) {
+            destMarker.setLngLat(routeCoords[routeCoords.length - 1]);
+        }
+
         fitMapToRoute(routeCoords);
         populateRouteResults(routeSummary, routeSteps);
         
@@ -1080,6 +1100,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 lastGeolocatedPosition = [lng, lat];
 
+                // Active Rerouting Logic based on location threshold
+                if (routeCoords.length > 0 && originPoint && destPoint) {
+                    const closestIdx = findClosestPointOnRoute([lng, lat]);
+                    const closestCoord = routeCoords[closestIdx];
+                    const distanceToRoute = getDistanceMeters([lng, lat], closestCoord);
+                    
+                    // If vehicle is more than 50 meters off the calculated path, trigger automatic active rerouting
+                    if (distanceToRoute > 50) {
+                        console.log(`Off route by ${Math.round(distanceToRoute)}m. Active rerouting...`);
+                        showToastAlert("Off route! Recalculating path...", "navigation-2");
+                        speakVoiceText("Off route. Recalculating directions.");
+                        
+                        originPoint = { lng: lng, lat: lat, name: "Current Location" };
+                        if (originMarker) originMarker.setLngLat([lng, lat]);
+                        
+                        calculateRoute(originPoint, destPoint, selectedMode);
+                        return; // Exit current watch frame to fetch fresh path
+                    }
+                }
+
                 // 1. Position vehicle marker
                 if (navVehicleMarker) navVehicleMarker.setLngLat([lng, lat]);
 
@@ -1094,23 +1134,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         currentBearing = calculateBearing(routeCoords[closestIdx], routeCoords[closestIdx + 1]);
                     }
                 }
+                lastHeading = currentBearing;
 
-                if (cameraMode === 'driver') {
-                    map.easeTo({
-                        center: [lng, lat],
-                        zoom: 19.5,
-                        pitch: 75,
-                        bearing: currentBearing,
-                        duration: 800
-                    });
-                } else if (cameraMode === 'orbit') {
-                    const frameBearing = (map.getBearing() + 0.15) % 360;
-                    map.jumpTo({
-                        center: [lng, lat],
-                        zoom: 15.8,
-                        pitch: 52,
-                        bearing: frameBearing
-                    });
+                if (isAutoFollowing) {
+                    if (cameraMode === 'driver') {
+                        map.easeTo({
+                            center: [lng, lat],
+                            zoom: 19.5,
+                            pitch: 75,
+                            bearing: currentBearing,
+                            duration: 800
+                        });
+                    } else if (cameraMode === 'orbit') {
+                        const frameBearing = (map.getBearing() + 0.15) % 360;
+                        map.jumpTo({
+                            center: [lng, lat],
+                            zoom: 15.8,
+                            pitch: 52,
+                            bearing: frameBearing
+                        });
+                    }
                 }
 
                 // 3. Update HUD Speedometer
@@ -1206,6 +1249,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function getDistanceMeters(p1, p2) {
+        const R = 6371000; // Earth radius in meters
+        const dLat = (p2[1] - p1[1]) * Math.PI / 180;
+        const dLon = (p2[0] - p1[0]) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(p1[1] * Math.PI / 180) * Math.cos(p2[1] * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
     function findClosestPointOnRoute(pos) {
         if (routeCoords.length === 0) return 0;
         let minDist = Infinity;
@@ -1228,6 +1282,11 @@ document.addEventListener('DOMContentLoaded', () => {
             navigator.geolocation.clearWatch(geolocationWatchId);
             geolocationWatchId = null;
         }
+
+        // Hide recenter button
+        const recenterBtn = document.getElementById('ctrl-recenter');
+        if (recenterBtn) recenterBtn.style.display = 'none';
+        isAutoFollowing = true;
 
         document.getElementById('nav-guidance-hud').classList.add('hidden');
         document.body.classList.remove('nav-active');
@@ -1621,14 +1680,23 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     });
 
-    // Custom zooms
-    document.getElementById('map-control-zoomin').addEventListener('click', () => {
-        map.zoomIn();
-    });
-    
-    document.getElementById('map-control-zoomout').addEventListener('click', () => {
-        map.zoomOut();
-    });
+    // Recenter to vehicle view logic
+    const recenterBtn = document.getElementById('ctrl-recenter');
+    if (recenterBtn) {
+        recenterBtn.addEventListener('click', () => {
+            if (lastGeolocatedPosition) {
+                isAutoFollowing = true;
+                recenterBtn.style.display = 'none';
+                map.easeTo({
+                    center: lastGeolocatedPosition,
+                    zoom: cameraMode === 'driver' ? 19.5 : 15.8,
+                    pitch: cameraMode === 'driver' ? 75 : 52,
+                    bearing: lastHeading || map.getBearing(),
+                    duration: 1000
+                });
+            }
+        });
+    }
 
     // Reset compass north alignment
     document.getElementById('map-control-compass').addEventListener('click', () => {
