@@ -1667,7 +1667,7 @@ li.active .step-node-dot {
 }
 
 .custom-map-marker {
-    position: relative;
+    position: absolute;
     width: 24px;
     height: 24px;
     display: flex;

@@ -749,8 +749,26 @@ document.addEventListener('DOMContentLoaded', () => {
         destMarker = markerTemp;
 
         // Recolor pins
-        if (originMarker) originMarker.getElement().querySelector('path').setAttribute('fill', '#10b981');
-        if (destMarker) destMarker.getElement().querySelector('path').setAttribute('fill', '#ef4444');
+        if (originMarker) {
+            const el = originMarker.getElement();
+            const pathEl = el.querySelector('path');
+            if (pathEl) {
+                pathEl.setAttribute('fill', '#10b981');
+            } else {
+                el.classList.remove('marker-dest');
+                el.classList.add('marker-origin');
+            }
+        }
+        if (destMarker) {
+            const el = destMarker.getElement();
+            const pathEl = el.querySelector('path');
+            if (pathEl) {
+                pathEl.setAttribute('fill', '#ef4444');
+            } else {
+                el.classList.remove('marker-origin');
+                el.classList.add('marker-dest');
+            }
+        }
 
         checkAndTriggerRouting();
     });
